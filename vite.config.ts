@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
   return {
-    // 1. WAJIB UNTUK GITHUB PAGES: Mengelakkan masalah skrin blank
+    // 1. WAJIB UNTUK GITHUB PAGES: Mengelakkan masalah skrin blank (nama repo: MyDiary)
     base: '/MyDiary/',
 
     plugins: [
@@ -23,7 +23,7 @@ export default defineConfig(() => {
           'pwa-maskable-512x512.png',
         ],
         manifest: {
-          // 2. Diselaraskan mengikut sub-laluan repository
+          // 2. Diselaraskan mengikut sub-laluan repository MyDiary
           id: '/MyDiary/',
           name: 'MyDiary - Personal Memory & Life Archive',
           short_name: 'MyDiary',
@@ -36,7 +36,7 @@ export default defineConfig(() => {
           scope: '/MyDiary/',
           icons: [
             {
-              // 3. Buang slash '/' di depan
+              // 3. Ikon tanpa slash depan untuk sokongan sub-folder
               src: 'pwa-192x192.png',
               sizes: '192x192',
               type: 'image/png',
@@ -120,4 +120,3 @@ export default defineConfig(() => {
     },
   };
 });
-```
