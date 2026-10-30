@@ -1,0 +1,12 @@
+{
+  "name": "MyDiary - Personal Memory & Life Archive",
+  "description": "Aplikasi diari peribadi dan arkib memori dengan waktu solat pintar, rakaman audio 3-slot, kamera 1:1, kalendar interaktif, dan integrasi Google Calendar.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

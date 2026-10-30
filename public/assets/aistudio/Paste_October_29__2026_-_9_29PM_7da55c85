@@ -1,0 +1,3199 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MyDiary - Personal Memory & Life Archive</title>
+
+<!-- Google Fonts: Inter, Syne, Playfair Display & Fira Code -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<!-- Font Awesome untuk Ikon Grafik -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+<style>
+/* ==========================================================================
+   SISTEM TEMA VANILLA CSS & REKA BENTUK RESPONSIF
+   ========================================================================== */
+:root {
+  /* Tema Lalai: French Pink */
+  --bg-canvas: #fff5f8;
+  --bg-panel: #ffffff;
+  --bg-card: #ffffff;
+  --border-color: #ffd1df;
+  --border-focus: #fd6c9e;
+  --text-main: #3b1828;
+  --text-muted: #8c5369;
+  --accent-color: #fd6c9e;
+  --accent-hover: #e64980;
+  --accent-soft: #ffe3ec;
+  --shadow-sm: 0 2px 4px rgba(253, 108, 158, 0.08);
+  --shadow-md: 0 4px 14px rgba(253, 108, 158, 0.12);
+  --shadow-lg: 0 10px 25px rgba(253, 108, 158, 0.18);
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-title: 'Syne', sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'Fira Code', monospace;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tema Biru Navy */
+body.theme-navy {
+  --bg-canvas: #0b1329;
+  --bg-panel: #111d42;
+  --bg-card: #182859;
+  --border-color: #243b7d;
+  --border-focus: #4d77ff;
+  --text-main: #edf2f7;
+  --text-muted: #94a9d4;
+  --accent-color: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-soft: rgba(59, 130, 246, 0.18);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* Tema Hitam Karbon & Aksen Emas */
+body.theme-black {
+  --bg-canvas: #09090b;
+  --bg-panel: #121215;
+  --bg-card: #18181d;
+  --border-color: #27272a;
+  --border-focus: #eab308;
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent-color: #eab308;
+  --accent-hover: #ca8a04;
+  --accent-soft: rgba(234, 179, 8, 0.15);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.8);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  min-height: 100%;
+  width: 100%;
+  background-color: var(--bg-canvas);
+}
+
+body {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  overflow-x: hidden;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+#dustCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0.75rem;
+}
+
+/* Pengepala */
+header.main-header {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-logo-img {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-soft);
+  transition: transform var(--transition-normal);
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.brand-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.brand-title span.diary-text {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-style: italic;
+  color: var(--accent-color);
+  margin-left: 2px;
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.time-prayer-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.live-clock-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.live-clock-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-soft);
+}
+
+.clock-digits-group {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.clock-main-time {
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.clock-sec-badge {
+  font-size: 0.68rem;
+  color: var(--accent-color);
+  margin-left: 2px;
+  font-weight: 800;
+}
+
+.clock-date-sub {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: capitalize;
+  border-left: 1px solid var(--border-color);
+  padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.prayer-live-badge {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.prayer-live-badge:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.prayer-icon-glow {
+  color: #10b981;
+  font-size: 0.85rem;
+  animation: pulse 1.5s infinite alternate;
+}
+
+.prayer-info-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.prayer-name-tag {
+  font-weight: 800;
+  color: var(--text-main);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.prayer-time-val {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-color);
+  font-size: 0.78rem;
+}
+
+.prayer-count-down {
+  font-size: 0.63rem;
+  color: var(--text-muted);
+}
+
+.theme-selector-wrapper {
+  position: relative;
+}
+
+.action-btn-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all var(--transition-fast);
+  touch-action: manipulation;
+}
+
+.action-btn-header:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--accent-soft);
+}
+
+.theme-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 170px;
+  z-index: 100;
+}
+
+.theme-menu.active {
+  display: flex;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.theme-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background var(--transition-fast);
+}
+
+.theme-menu-item:hover {
+  background: var(--accent-soft);
+}
+
+.color-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Susun Atur Utama */
+.journal-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1rem;
+  flex: 1;
+  align-items: start;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.panel-title i {
+  color: var(--accent-color);
+}
+
+.editing-status-bar {
+  display: none;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid #3b82f6;
+  color: #1d4ed8;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  justify-content: space-between;
+  align-items: center;
+}
+
+body.theme-navy .editing-status-bar,
+body.theme-black .editing-status-bar {
+  color: #93c5fd;
+}
+
+.quote-box {
+  background: var(--bg-canvas);
+  border-left: 3px solid var(--accent-color);
+  padding: 0.75rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  font-style: italic;
+}
+
+.quote-box p {
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+
+.quote-box span {
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  display: block;
+  text-align: right;
+}
+
+.calendar-container {
+  margin-bottom: 1rem;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.cal-btn {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.cal-btn:hover {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+}
+
+.cal-day:hover {
+  background: var(--accent-soft);
+}
+
+.cal-day.empty {
+  cursor: default;
+  background: transparent !important;
+}
+
+.cal-day.today {
+  border-color: var(--accent-color);
+  font-weight: 800;
+}
+
+.cal-day.active-filter {
+  background: var(--accent-color) !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+
+.cal-day.has-entry::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-color);
+}
+
+.cal-day.has-entry.is-future::after {
+  background: #3b82f6;
+}
+
+.cal-day.active-filter::after {
+  background: #ffffff !important;
+}
+
+.archive-stats-box {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  margin: 0.85rem 1.15rem 0.25rem 1.15rem;
+}
+
+.archive-stats-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.archive-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+.stat-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.2rem;
+  text-align: center;
+}
+
+.stat-number {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.input-field {
+  width: 100%;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.input-field:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.title-input {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.content-textarea {
+  min-height: 160px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.meta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.media-card {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+}
+
+.media-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.media-btn-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.media-action-btn {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all var(--transition-fast);
+  font-family: var(--font-body);
+}
+
+.media-action-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.photo-dropdown-container {
+  display: none;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem;
+}
+
+.dropdown-cursor-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cursor-nav-btn {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.image-preview-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 380px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.image-preview-stage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: zoom-in;
+}
+
+.audio-slots-tabs {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 0.6rem;
+}
+
+.audio-tab-btn {
+  flex: 1;
+  padding: 0.3rem;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  font-family: var(--font-body);
+}
+
+.audio-tab-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.audio-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.audio-dot.filled {
+  background: #10b981;
+}
+
+.audio-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.record-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+}
+
+.record-btn.recording {
+  animation: pulse 1s infinite alternate;
+  background: #b91c1c;
+}
+
+.form-submit-row {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.btn-submit-primary {
+  flex: 1;
+  min-width: 160px;
+  background: var(--accent-color);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  touch-action: manipulation;
+  font-family: var(--font-body);
+}
+
+.btn-submit-primary:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-submit-gcal {
+  background: var(--bg-panel);
+  border: 1px solid #4285f4;
+  color: #4285f4;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  transition: all var(--transition-fast);
+  touch-action: manipulation;
+  font-family: var(--font-body);
+}
+
+.btn-submit-gcal:hover {
+  background: #4285f4;
+  color: #fff;
+}
+
+.archive-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.archive-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.archive-dropside {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border-color);
+  z-index: 999;
+  box-shadow: var(--shadow-lg);
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.archive-dropside.open {
+  right: 0;
+}
+
+.joy-banner-stage {
+  position: relative;
+  flex-shrink: 0;
+  height: 110px;
+  width: 100%;
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 25%, #ffb199 50%, #fcd34d 75%, #a7f3d0 100%);
+  background-size: 200% 200%;
+  animation: joyGradientFlow 6s ease infinite alternate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.joy-confetti-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  border-radius: 2px;
+  animation: confettiFlutter 3s infinite linear;
+}
+
+.confetti-1 { left: 8%; background: #ffeb3b; animation-delay: 0.1s; }
+.confetti-2 { left: 22%; background: #00e676; animation-delay: 0.7s; width: 6px; height: 10px; }
+.confetti-3 { left: 38%; background: #ff4081; animation-delay: 1.2s; }
+.confetti-4 { left: 55%; background: #00e5ff; animation-delay: 0.4s; }
+.confetti-5 { left: 74%; background: #ffea00; animation-delay: 1.5s; width: 10px; height: 10px; border-radius: 50%; }
+.confetti-6 { left: 88%; background: #7c4dff; animation-delay: 0.9s; }
+
+.joy-balloon {
+  position: absolute;
+  bottom: -20px;
+  font-size: 1.4rem;
+  animation: balloonFloat 4s infinite ease-in-out alternate;
+  opacity: 0.85;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+}
+
+.balloon-left { left: 12px; animation-delay: 0.2s; }
+.balloon-right { right: 14px; animation-delay: 1s; }
+
+.joy-bouncing-mascot {
+  position: absolute;
+  bottom: 6px;
+  font-size: 2.3rem;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.2));
+  animation: happyBounce 0.9s infinite ease-in-out alternate;
+  cursor: pointer;
+  user-select: none;
+}
+
+.joy-title-pill {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  padding: 0.35rem 0.95rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+  transform: translateY(-16px);
+  animation: happyPillWiggle 2.5s infinite ease-in-out;
+}
+
+.dropside-header {
+  padding: 0.85rem 1.15rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dropside-search-bar {
+  padding: 0.65rem 1.15rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.dropside-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: fadeIn 0.25s ease;
+}
+
+.entry-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.entry-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.entry-meta-info {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.entry-body {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.entry-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--border-color);
+  margin-top: 0.35rem;
+}
+
+.filter-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.action-btn-sm {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.action-btn-sm:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.action-btn-sm.edit:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.action-btn-sm.delete:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.floating-archive-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: linear-gradient(135deg, #ff9a8b 0%, #ff6a88 100%);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 4px 15px rgba(255, 106, 136, 0.45);
+  font-size: 0.85rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  z-index: 900;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  touch-action: manipulation;
+  font-family: var(--font-body);
+}
+
+.floating-archive-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(255, 106, 136, 0.6);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.camera-stream-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 340px;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0.75rem auto;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-stream-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-controls-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.shutter-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: #fd6c9e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+footer.app-footer {
+  margin-top: 1.5rem;
+  padding: 1.25rem 0 4.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.donate-pill-btn {
+  background: var(--bg-panel);
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 0.5rem 1.15rem;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-body);
+}
+
+.donate-pill-btn:hover {
+  background: var(--accent-color);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+#toastNotification {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #18181b;
+  color: #fff;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 92vw;
+}
+
+#toastNotification.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.6; }
+}
+
+@keyframes joyGradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes happyBounce {
+  0% { transform: translateY(0) scale(1, 1); }
+  60% { transform: translateY(-20px) scale(0.95, 1.05); }
+  100% { transform: translateY(-24px) scale(1.05, 0.95) rotate(6deg); }
+}
+
+@keyframes confettiFlutter {
+  0% { top: -15%; transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.9; }
+  50% { transform: translateY(60px) rotate(180deg) scale(1.1); opacity: 1; }
+  100% { top: 110%; transform: translateY(120px) rotate(360deg) scale(0.7); opacity: 0; }
+}
+
+@keyframes balloonFloat {
+  0% { transform: translateY(0) rotate(-4deg); }
+  100% { transform: translateY(-18px) rotate(6deg); }
+}
+
+@keyframes happyPillWiggle {
+  0%, 100% { transform: translateY(-16px) rotate(0deg); }
+  25% { transform: translateY(-18px) rotate(-1.5deg); }
+  75% { transform: translateY(-15px) rotate(1.5deg); }
+}
+
+@media (max-width: 900px) {
+  .journal-grid {
+    grid-template-columns: 1fr;
+  }
+  .archive-dropside {
+    max-width: 100%;
+  }
+  header.main-header {
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body class="theme-pink">
+
+<canvas id="dustCanvas"></canvas>
+
+<div class="app-wrapper">
+
+  <!-- PENGEPALA -->
+  <header class="main-header">
+    <div class="brand-section">
+      <img
+        src="https://i.postimg.cc/vm141QYg/1793143031058.jpg"
+        alt="MyDiary Logo"
+        class="brand-logo-img"
+        onerror="this.onerror=null;this.src='https://placehold.co/46x46/fd6c9e/ffffff?text=MD'"
+      >
+      <div>
+        <h1 class="brand-title">My<span class="diary-text">Diary</span></h1>
+        <p class="brand-subtitle"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--accent-color);"></i> Personal Memory &amp; Life Archive</p>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <div class="time-prayer-cluster">
+        <div class="live-clock-card" title="Masa & Tarikh Nyata">
+          <i class="fa-regular fa-clock" style="color: var(--accent-color); font-size: 0.95rem;"></i>
+          <div class="clock-digits-group">
+            <span class="clock-main-time" id="liveTimeHoursMins">00:00</span>
+            <span class="clock-sec-badge" id="liveTimeSeconds">:00</span>
+          </div>
+          <div class="clock-date-sub">
+            <span id="liveDayText">Hari Ini</span>
+            <span id="liveDateShort" style="font-family: var(--font-mono); font-size: 0.62rem;">01 Jan</span>
+          </div>
+        </div>
+
+        <div class="prayer-live-badge" id="prayerLiveBadge" title="Klik untuk kemaskini lokasi solat">
+          <i class="fa-solid fa-mosque prayer-icon-glow"></i>
+          <div class="prayer-info-block">
+            <div class="prayer-name-tag">
+              <span id="nextPrayerName">Solat...</span>
+              <span class="prayer-time-val" id="nextPrayerTime">--:--</span>
+            </div>
+            <span class="prayer-count-down" id="prayerCountdownDesc">Mengesan lokasi...</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="action-btn-header" id="headerArchiveBtn" title="Buka Arkib Catatan">
+        <i class="fa-solid fa-box-archive" style="color: var(--accent-color);"></i> Arkib (<span id="headerArchiveCount">0</span>)
+      </button>
+
+      <div class="theme-selector-wrapper">
+        <button type="button" class="action-btn-header" id="themeBtnToggle">
+          <i class="fa-solid fa-palette"></i> Tema
+        </button>
+        <div class="theme-menu" id="themeDropdownMenu">
+          <button type="button" class="theme-menu-item" onclick="setTheme('theme-pink')">
+            <span class="color-swatch" style="background: #fd6c9e;"></span> French Pink
+          </button>
+          <button type="button" class="theme-menu-item" onclick="setTheme('theme-navy')">
+            <span class="color-swatch" style="background: #1d4ed8;"></span> Biru Navy
+          </button>
+          <button type="button" class="theme-menu-item" onclick="setTheme('theme-black')">
+            <span class="color-swatch" style="background: #eab308;"></span> Hitam Karbon
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- GRID UTAMA -->
+  <main class="journal-grid">
+
+    <!-- LAJUR KIRI: KALENDAR & MOTIVASI -->
+    <aside class="panel left-column">
+      <div class="quote-box">
+        <p id="dailyQuoteText">"Setiap hari membawa peluang baharu untuk mencatat kenangan indah."</p>
+        <span id="quoteDayIndicator">Hari Ini</span>
+      </div>
+
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <button type="button" class="cal-btn" id="prevMonthBtn" title="Bulan Lepas"><i class="fa-solid fa-chevron-left"></i></button>
+          <span id="calendarMonthYear">Oktober 2026</span>
+          <button type="button" class="cal-btn" id="nextMonthBtn" title="Bulan Hadapan"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>Ah</span><span>Is</span><span>Se</span><span>Ra</span><span>Kh</span><span>Ju</span><span>Sa</span>
+        </div>
+        <div class="calendar-grid" id="calendarDaysGrid"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-muted);">
+          <span><i class="fa-solid fa-circle" style="color: var(--accent-color); font-size: 0.45rem;"></i> Ada Catatan</span>
+          <button type="button" id="resetCalFilterBtn" style="background:none; border:none; color:var(--accent-color); font-size:0.72rem; cursor:pointer; display:none;">
+            Lihat Semua
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- LAJUR KANAN: EDITOR CORETAN JURNAL -->
+    <section class="panel right-column" id="editorPanelContainer">
+      <div class="panel-header">
+        <span class="panel-title" id="editorPanelTitle"><i class="fa-solid fa-pen-nib"></i> Coretan &amp; Rancangan Baharu</span>
+        <span style="font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);" id="editorHeaderDate">Tarikh</span>
+      </div>
+
+      <div class="editing-status-bar" id="editingStatusBar">
+        <span><i class="fa-solid fa-pen-to-square"></i> Sedang menyunting catatan yang dipilih</span>
+        <button type="button" class="action-btn-sm" id="cancelEditModeBtn" title="Batal Suntingan" style="width: auto; padding: 0.2rem 0.6rem; font-size: 0.72rem;">
+          Batal
+        </button>
+      </div>
+
+      <form id="journalEntryForm" class="editor-form">
+        <div style="background: var(--bg-canvas); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.65rem 0.85rem; display: flex; flex-direction: column; gap: 0.4rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem;">
+            <label for="customEntryDate" style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 0.35rem;">
+              <i class="fa-regular fa-calendar-plus" style="color: var(--accent-color);"></i> Tarikh &amp; Masa Catatan:
+            </label>
+            <div style="display: flex; gap: 0.35rem; align-items: center;">
+              <span id="futureStatusBadge" class="filter-badge" style="background: #3b82f6; color: #fff; display: none;">
+                <i class="fa-solid fa-rocket"></i> Rancangan Masa Depan
+              </span>
+              <button type="button" id="resetCurrentTimeBtn" class="action-btn-sm" style="width: auto; padding: 0.15rem 0.5rem; font-size: 0.7rem; border-radius: 9999px;">
+                <i class="fa-solid fa-rotate-left"></i>&nbsp;Waktu Sekarang
+              </button>
+            </div>
+          </div>
+          <input type="datetime-local" id="customEntryDate" class="input-field" style="padding: 0.4rem 0.65rem; font-family: var(--font-mono); font-size: 0.82rem; cursor: pointer;">
+        </div>
+
+        <input type="text" id="entryTitleInput" class="input-field title-input" placeholder="Tajuk catatan atau perancangan..." required maxlength="120">
+
+        <div class="meta-row">
+          <select id="entryMoodSelect" class="input-field">
+            <option value="🌸 Tenang & Bahagia">🌸 Tenang &amp; Bahagia</option>
+            <option value="✨ Bersemangat">✨ Bersemangat</option>
+            <option value="💭 Bertafakur">💭 Bertafakur</option>
+            <option value="⚡ Produktif">⚡ Produktif</option>
+            <option value="🌧️ Sayu / Santai">🌧️ Sayu / Santai</option>
+          </select>
+
+          <select id="entryCategorySelect" class="input-field">
+            <option value="Catatan Harian">Catatan Harian</option>
+            <option value="Perancangan & Matlamat">Perancangan &amp; Matlamat</option>
+            <option value="Kenangan Indah">Kenangan Indah</option>
+            <option value="Idea & Kreativiti">Idea &amp; Kreativiti</option>
+            <option value="Tugasan / Kerja">Tugasan / Kerja</option>
+          </select>
+        </div>
+
+        <textarea id="entryContentInput" class="input-field content-textarea" placeholder="Tuliskan pengalaman, perasaan, atau rancangan masa hadapan anda di sini..." required></textarea>
+
+        <!-- Lampiran Gambar -->
+        <div class="media-card">
+          <div class="media-header">
+            <span><i class="fa-regular fa-image" style="color: var(--accent-color);"></i> Lampiran Gambar (<span id="photoCountLabel">0</span>/10)</span>
+            <div class="media-btn-row">
+              <label for="imageFileInput" class="media-action-btn">
+                <i class="fa-solid fa-images"></i> Galeri
+              </label>
+              <input type="file" id="imageFileInput" class="file-input-hidden" accept="image/*" multiple>
+
+              <button type="button" class="media-action-btn" onclick="openSystemCameraDirectly()" title="Buka aplikasi kamera terus">
+                <i class="fa-solid fa-camera"></i> Ambil Foto
+              </button>
+              <input type="file" id="cameraSystemInput" class="file-input-hidden" accept="image/*" capture="environment">
+
+              <button type="button" class="media-action-btn" id="openCameraModalBtn" title="Buka lensa viewfinder 1:1">
+                <i class="fa-solid fa-expand"></i> Viewfinder 1:1
+              </button>
+            </div>
+          </div>
+
+          <!-- Dropdown Cursor Image Previewer -->
+          <div class="photo-dropdown-container" id="photoDropdownContainer">
+            <div class="dropdown-cursor-bar">
+              <button type="button" class="cursor-nav-btn" id="prevPhotoBtn" title="Foto Sebelumnya"><i class="fa-solid fa-chevron-left"></i></button>
+              <select id="photoCursorDropdown" class="input-field" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; flex: 1;"></select>
+              <button type="button" class="cursor-nav-btn" id="nextPhotoBtn" title="Foto Seterusnya"><i class="fa-solid fa-chevron-right"></i></button>
+              <button type="button" class="action-btn-sm delete" id="removePhotoBtn" title="Padam Foto Ini"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="image-preview-stage">
+              <img id="activePhotoPreviewImg" src="" alt="Pratonton Lampiran" onclick="zoomImage(this.src)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Rakaman Audio Multi-Slot -->
+        <div class="media-card">
+          <div class="media-header">
+            <span><i class="fa-solid fa-microphone-lines" style="color: var(--accent-color);"></i> Rakaman Suara (3 Slot)</span>
+            <span id="recordingTimer" style="font-family: var(--font-mono); font-size: 0.75rem; color: #ef4444; display: none;">
+              <i class="fa-solid fa-circle"></i> 00:00
+            </span>
+          </div>
+
+          <div class="audio-slots-tabs">
+            <button type="button" class="audio-tab-btn active" onclick="switchAudioSlot(0)">
+              <span class="audio-dot" id="audioDot0"></span> Audio 1
+            </button>
+            <button type="button" class="audio-tab-btn" onclick="switchAudioSlot(1)">
+              <span class="audio-dot" id="audioDot1"></span> Audio 2
+            </button>
+            <button type="button" class="audio-tab-btn" onclick="switchAudioSlot(2)">
+              <span class="audio-dot" id="audioDot2"></span> Audio 3
+            </button>
+          </div>
+
+          <div class="audio-controls-row">
+            <button type="button" class="record-btn" id="toggleRecordBtn">
+              <i class="fa-solid fa-microphone"></i> Mula Rakam
+            </button>
+            <p id="audioErrorMsg" style="display:none; flex-basis:100%; font-size:0.72rem; color:#ef4444; font-weight:600;"></p>
+            <audio id="audioPlaybackElement" controls style="flex: 1; min-width: 120px; height: 32px; display: none;"></audio>
+            <button type="button" class="action-btn-sm delete" id="deleteAudioSlotBtn" style="display: none;" title="Padam Audio Ini">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Butang Simpan -->
+        <div class="form-submit-row">
+          <button type="submit" class="btn-submit-primary" id="primarySubmitBtn">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Catatan
+          </button>
+          <button type="button" class="btn-submit-gcal" id="saveAndGoogleCalendarBtn">
+            <i class="fa-brands fa-google"></i> Simpan &amp; Jadual di Google Calendar
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- FOOTER: DONASI -->
+  <footer class="app-footer">
+    <button type="button" class="donate-pill-btn" id="openDonateModalBtn">
+      <i class="fa-solid fa-heart" style="color: #fd6c9e;"></i> Donate for more inovation
+    </button>
+    <p>© 2026 MyDiary. Dikuasakan oleh Vanilla JS &amp; CSS Tulen.</p>
+  </footer>
+
+</div>
+
+<!-- DROPSIDE DRAWER: ARKIB CATATAN -->
+<div class="archive-backdrop" id="archiveBackdrop"></div>
+<aside class="archive-dropside" id="archiveDropside">
+  <div class="joy-banner-stage">
+    <div class="joy-confetti-layer">
+      <span class="confetti-piece confetti-1"></span>
+      <span class="confetti-piece confetti-2"></span>
+      <span class="confetti-piece confetti-3"></span>
+      <span class="confetti-piece confetti-4"></span>
+      <span class="confetti-piece confetti-5"></span>
+      <span class="confetti-piece confetti-6"></span>
+    </div>
+
+    <span class="joy-balloon balloon-left" title="Yay!">🎈</span>
+    <span class="joy-balloon balloon-right" title="Fun!">🎉</span>
+
+    <div class="joy-bouncing-mascot" id="joyMascot" title="Happy Go Lucky!">😄</div>
+
+    <div class="joy-title-pill">
+      <i class="fa-solid fa-face-laugh-beam" style="color: #fffb00;"></i> Joyful Memories • Happy Go Lucky!
+    </div>
+  </div>
+
+  <div class="archive-stats-box">
+    <div class="archive-stats-header">
+      <i class="fa-solid fa-chart-pie" style="color: var(--accent-color);"></i> Ringkasan Arkib Anda
+    </div>
+    <div class="archive-stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" id="totalEntriesCount">0</div>
+        <div class="stat-label">Catatan</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="totalPhotosCount">0</div>
+        <div class="stat-label">Foto</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="totalAudioCount">0</div>
+        <div class="stat-label">Audio</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="futureEntriesCount">0</div>
+        <div class="stat-label">Hadapan</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropside-header">
+    <div style="font-weight: 700; font-size: 0.95rem;">
+      Senarai Catatan (<span id="archiveTotalBadge">0</span>)
+    </div>
+    <button type="button" class="action-btn-sm" id="closeArchiveBtn" title="Tutup Arkib">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <div class="dropside-search-bar">
+    <input type="text" id="searchEntriesInput" class="input-field" placeholder="Cari tajuk atau isi catatan..." style="font-size: 0.8rem;">
+  </div>
+
+  <div class="dropside-content-scroll" id="archiveEntriesContainer"></div>
+</aside>
+
+<!-- Butang Terapung Arkib -->
+<button type="button" class="floating-archive-btn" id="floatingArchiveBtn" title="Buka Arkib Catatan">
+  <i class="fa-solid fa-face-laugh-beam"></i> Arkib (<span id="floatingCountBadge">0</span>)
+</button>
+
+<!-- MODAL: KAMERA PERANTI (1:1) -->
+<div class="modal-backdrop" id="cameraModal">
+  <div class="modal-box">
+    <button type="button" class="modal-close-btn" id="closeCameraModalBtn">&times;</button>
+    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem;">Kamera Peranti (1:1)</h3>
+    <p style="font-size: 0.75rem; color: var(--text-muted);" id="cameraStatusSubtitle">Mengaktifkan lensa kamera...</p>
+
+    <div class="camera-stream-wrapper" id="cameraWrapper">
+      <video id="cameraVideo" autoplay playsinline webkit-playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+    </div>
+
+    <div class="camera-controls-bottom" id="cameraControlsBottom">
+      <button type="button" class="action-btn-sm" id="flipCameraBtn" title="Tukar Kamera">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
+      <button type="button" class="shutter-btn" id="takePhotoShutterBtn" title="Tangkap Gambar">
+        <i class="fa-solid fa-camera"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DONATE / DUITNOW QR -->
+<div class="modal-backdrop" id="donateModal">
+  <div class="modal-box" style="text-align: center;">
+    <button type="button" class="modal-close-btn" id="closeDonateModalBtn">&times;</button>
+    <div style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.25rem; font-family: var(--font-title);">Sokong Inovasi</div>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.85rem;">Terima kasih atas sokongan anda untuk pembangunan fitur baharu!</p>
+
+    <div style="background: #fff; padding: 1rem; border-radius: var(--radius-md); display: inline-block; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); max-width: 260px; margin: 0 auto;">
+      <img
+        src="https://i.postimg.cc/9Fxwv43T/MAE-QR-20261029-093107.jpg"
+        id="donateQrImg"
+        alt="Kod QR DuitNow"
+        style="width: 100%; height: auto; border-radius: var(--radius-sm);"
+        onerror="this.onerror=null;this.src='https://placehold.co/240x240/fd6c9e/ffffff?text=QR+Code'"
+      >
+    </div>
+  </div>
+</div>
+
+<!-- Modal Zum Foto -->
+<div class="modal-backdrop" id="imageZoomModal" onclick="this.classList.remove('active')">
+  <div style="max-width: 90vw; max-height: 90vh;">
+    <img id="zoomedImageTag" src="" alt="Zoomed" style="max-width: 100%; max-height: 90vh; border-radius: var(--radius-md); box-shadow: var(--shadow-lg);">
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toastNotification"><i class="fa-solid fa-circle-check"></i> <span id="toastMessageText">Pemberitahuan</span></div>
+
+<!-- LOGIK JAVASCRIPT -->
+<script>
+const DAILY_QUOTES = [
+  "Hari baharu membawa kekuatan dan pemikiran baharu.",
+  "Tuliskan impianmu dengan dakwat keberanian.",
+  "Langkah kecil hari ini adalah permulaan kejayaan besar esok.",
+  "Ketenangan minda adalah kemewahan hidup yang sebenar.",
+  "Hargai setiap detik kecil yang mengisi harimu.",
+  "Jadilah versi dirimu yang lebih baik daripada semalam.",
+  "Masa depan dimiliki oleh mereka yang percaya pada keindahan impian mereka.",
+  "Setiap cabaran adalah guru yang membentuk kematangan.",
+  "Kesyukuran mengubah apa yang kita ada menjadi mencukupi.",
+  "Fokus pada proses, nikmati perjalanannya.",
+  "Jangan tunggu saat yang sempurna, jadikan saat ini bermakna.",
+  "Kejayaan bermula dengan keberanian untuk mencuba.",
+  "Tersenyumlah, harimu berharga untuk diisi dengan kebaikan.",
+  "Disiplin adalah jambatan antara matlamat dan pencapaian.",
+  "Kebaikan yang ikhlas sentiasa menemui jalan kembali.",
+  "Perjalanan seribu batu bermula dengan langkah pertama.",
+  "Rehatlah sebentar jika lelah, tetapi jangan pernah berputus asa.",
+  "Setiap matahari terbit menjanjikan harapan yang segar.",
+  "Kata-katamu membentuk realitimu; catatkan yang terbaik.",
+  "Kekuatan sebenar terbit daripada ketenangan jiwa.",
+  "Hiduplah pada masa kini dengan perancangan masa depan yang bijak.",
+  "Kegagalan hanyalah peluang untuk bermula semula dengan lebih bijak.",
+  "Keikhlasan dalam berkarya menghasilkan keabadian kenangan.",
+  "Beri ruang untuk dirimu berkembang mengikut waktumu sendiri.",
+  "Sentiasa ada sesuatu yang indah untuk disyukuri hari ini.",
+  "Cipta peluang di mana orang lain hanya melihat halangan.",
+  "Hargai orang di sekelilingmu, kenangan bersama mereka tidak ternilai.",
+  "Ketabahan hari ini adalah mahkota kemenangan esok.",
+  "Jadikan setiap helai jurnal ini saksi perjuangan hidupmu.",
+  "Percayalah pada potensi luar biasa yang ada dalam dirimu.",
+  "Tutup bulan ini dengan kesyukuran dan sambut masa depan dengan harapan."
+];
+
+let journalEntries = [];
+let currentFilteredDate = null;
+let calendarDateCursor = new Date();
+calendarDateCursor.setDate(1);
+let currentEditingEntryId = null;
+
+let attachedPhotos = [];
+let currentPhotoCursorIndex = 0;
+
+let attachedAudios = [null, null, null];
+let currentAudioSlotIndex = 0;
+
+let mediaRecorder = null;
+let audioStream = null;
+let audioChunks = [];
+let isRecording = false;
+let recordingInterval = null;
+let recordingSeconds = 0;
+
+let cameraMediaStream = null;
+let currentFacingMode = 'environment';
+
+const liveTimeHoursMins = document.getElementById('liveTimeHoursMins');
+const liveTimeSeconds = document.getElementById('liveTimeSeconds');
+const liveDayText = document.getElementById('liveDayText');
+const liveDateShort = document.getElementById('liveDateShort');
+
+const nextPrayerName = document.getElementById('nextPrayerName');
+const nextPrayerTime = document.getElementById('nextPrayerTime');
+const prayerCountdownDesc = document.getElementById('prayerCountdownDesc');
+const prayerLiveBadge = document.getElementById('prayerLiveBadge');
+
+const dustCanvas = document.getElementById('dustCanvas');
+const toastNotification = document.getElementById('toastNotification');
+const toastMessageText = document.getElementById('toastMessageText');
+
+const themeBtnToggle = document.getElementById('themeBtnToggle');
+const themeDropdownMenu = document.getElementById('themeDropdownMenu');
+
+const calendarMonthYear = document.getElementById('calendarMonthYear');
+const calendarDaysGrid = document.getElementById('calendarDaysGrid');
+const prevMonthBtn = document.getElementById('prevMonthBtn');
+const nextMonthBtn = document.getElementById('nextMonthBtn');
+const resetCalFilterBtn = document.getElementById('resetCalFilterBtn');
+const dailyQuoteText = document.getElementById('dailyQuoteText');
+const quoteDayIndicator = document.getElementById('quoteDayIndicator');
+
+const totalEntriesCount = document.getElementById('totalEntriesCount');
+const totalPhotosCount = document.getElementById('totalPhotosCount');
+const totalAudioCount = document.getElementById('totalAudioCount');
+const futureEntriesCount = document.getElementById('futureEntriesCount');
+const headerArchiveCount = document.getElementById('headerArchiveCount');
+const floatingCountBadge = document.getElementById('floatingCountBadge');
+const archiveTotalBadge = document.getElementById('archiveTotalBadge');
+
+const journalEntryForm = document.getElementById('journalEntryForm');
+const customEntryDate = document.getElementById('customEntryDate');
+const futureStatusBadge = document.getElementById('futureStatusBadge');
+const resetCurrentTimeBtn = document.getElementById('resetCurrentTimeBtn');
+const editorHeaderDate = document.getElementById('editorHeaderDate');
+const entryTitleInput = document.getElementById('entryTitleInput');
+const entryMoodSelect = document.getElementById('entryMoodSelect');
+const entryCategorySelect = document.getElementById('entryCategorySelect');
+const entryContentInput = document.getElementById('entryContentInput');
+const primarySubmitBtn = document.getElementById('primarySubmitBtn');
+const saveAndGoogleCalendarBtn = document.getElementById('saveAndGoogleCalendarBtn');
+
+const editorPanelTitle = document.getElementById('editorPanelTitle');
+const editingStatusBar = document.getElementById('editingStatusBar');
+const cancelEditModeBtn = document.getElementById('cancelEditModeBtn');
+const editorPanelContainer = document.getElementById('editorPanelContainer');
+
+const photoCountLabel = document.getElementById('photoCountLabel');
+const imageFileInput = document.getElementById('imageFileInput');
+const cameraSystemInput = document.getElementById('cameraSystemInput');
+const photoDropdownContainer = document.getElementById('photoDropdownContainer');
+const photoCursorDropdown = document.getElementById('photoCursorDropdown');
+const activePhotoPreviewImg = document.getElementById('activePhotoPreviewImg');
+const prevPhotoBtn = document.getElementById('prevPhotoBtn');
+const nextPhotoBtn = document.getElementById('nextPhotoBtn');
+const removePhotoBtn = document.getElementById('removePhotoBtn');
+
+const toggleRecordBtn = document.getElementById('toggleRecordBtn');
+const recordingTimer = document.getElementById('recordingTimer');
+const audioPlaybackElement = document.getElementById('audioPlaybackElement');
+const deleteAudioSlotBtn = document.getElementById('deleteAudioSlotBtn');
+
+const headerArchiveBtn = document.getElementById('headerArchiveBtn');
+const floatingArchiveBtn = document.getElementById('floatingArchiveBtn');
+const closeArchiveBtn = document.getElementById('closeArchiveBtn');
+const archiveDropside = document.getElementById('archiveDropside');
+const archiveBackdrop = document.getElementById('archiveBackdrop');
+const archiveEntriesContainer = document.getElementById('archiveEntriesContainer');
+const searchEntriesInput = document.getElementById('searchEntriesInput');
+
+const openCameraModalBtn = document.getElementById('openCameraModalBtn');
+const cameraModal = document.getElementById('cameraModal');
+const closeCameraModalBtn = document.getElementById('closeCameraModalBtn');
+const cameraVideo = document.getElementById('cameraVideo');
+const cameraStatusSubtitle = document.getElementById('cameraStatusSubtitle');
+const takePhotoShutterBtn = document.getElementById('takePhotoShutterBtn');
+const flipCameraBtn = document.getElementById('flipCameraBtn');
+
+const openDonateModalBtn = document.getElementById('openDonateModalBtn');
+const donateModal = document.getElementById('donateModal');
+const closeDonateModalBtn = document.getElementById('closeDonateModalBtn');
+
+window.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initLiveClock();
+  initPrayerTimes();
+  initGoldenDust();
+  initMotivationQuotes();
+  initCustomDatePicker();
+  loadEntriesFromStorage();
+  renderCalendar();
+  renderEntries();
+  setupEventListeners();
+  initBackNavigation();
+});
+
+/* ---------- TEMA ---------- */
+function initTheme() {
+  let savedTheme = 'theme-pink';
+  try { savedTheme = localStorage.getItem('mydiary_theme') || 'theme-pink'; } catch (e) {}
+  setTheme(savedTheme, false);
+}
+
+function setTheme(themeClass, save = true) {
+  document.body.classList.remove('theme-pink', 'theme-navy', 'theme-black');
+  document.body.classList.add(themeClass);
+  if (save) {
+    try { localStorage.setItem('mydiary_theme', themeClass); } catch (e) {}
+    showToast('Tema berjaya dikemas kini!');
+  }
+  if (themeDropdownMenu) themeDropdownMenu.classList.remove('active');
+}
+
+/* ---------- JAM ---------- */
+function initLiveClock() {
+  const dayNames = ['Ahad', 'Isnin', 'Selasa', 'Rabu', 'Khamis', 'Jumaat', 'Sabtu'];
+  const monthNamesShort = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
+
+  const updateClock = () => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    const secs = String(now.getSeconds()).padStart(2, '0');
+
+    if (liveTimeHoursMins) liveTimeHoursMins.textContent = `${hours}:${mins}`;
+    if (liveTimeSeconds) liveTimeSeconds.textContent = `:${secs}`;
+
+    if (liveDayText) liveDayText.textContent = dayNames[now.getDay()];
+    if (liveDateShort) liveDateShort.textContent = `${now.getDate()} ${monthNamesShort[now.getMonth()]}`;
+  };
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+/* ---------- WAKTU SOLAT ---------- */
+let currentPrayerTimes = null;
+let prayerCountdownInterval = null;
+
+function initPrayerTimes() {
+  if (prayerLiveBadge) {
+    prayerLiveBadge.addEventListener('click', () => {
+      showToast('Mengemas kini lokasi solat...');
+      fetchDeviceCoordinates();
+    });
+  }
+  fetchDeviceCoordinates();
+}
+
+function fetchDeviceCoordinates() {
+  if (!navigator.geolocation) {
+    fetchPrayerTimesByCoords(3.1390, 101.6869, 'K.Lumpur');
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      fetchPrayerTimesByCoords(position.coords.latitude, position.coords.longitude, 'Lokasi Anda');
+    },
+    () => {
+      fetchPrayerTimesByCoords(3.1390, 101.6869, 'K.Lumpur (Lalai)');
+    },
+    { timeout: 10000, enableHighAccuracy: false }
+  );
+}
+
+async function fetchPrayerTimesByCoords(lat, lng, locationLabel) {
+  try {
+    const timestamp = Math.floor(Date.now() / 1000);
+    // method=17 : JAKIM (Malaysia)
+    const response = await fetch(`https://api.aladhan.com/v1/timings/${timestamp}?latitude=${lat}&longitude=${lng}&method=17`);
+
+    if (!response.ok) throw new Error('API solat tidak dapat dihubungi');
+    const json = await response.json();
+
+    if (json && json.data && json.data.timings) {
+      currentPrayerTimes = json.data.timings;
+      updateNextPrayer(locationLabel);
+
+      if (prayerCountdownInterval) clearInterval(prayerCountdownInterval);
+      prayerCountdownInterval = setInterval(() => {
+        updateNextPrayer(locationLabel);
+      }, 30000);
+    } else {
+      throw new Error('Data solat tidak sah');
+    }
+  } catch (err) {
+    calculateLocalEstimatedPrayer(locationLabel);
+  }
+}
+
+function calculateLocalEstimatedPrayer(label) {
+  currentPrayerTimes = {
+    Fajr: "05:48",
+    Sunrise: "07:00",
+    Dhuhr: "13:08",
+    Asr: "16:25",
+    Maghrib: "19:10",
+    Isha: "20:20"
+  };
+  updateNextPrayer(label + ' • anggaran');
+
+  if (prayerCountdownInterval) clearInterval(prayerCountdownInterval);
+  prayerCountdownInterval = setInterval(() => {
+    updateNextPrayer(label + ' • anggaran');
+  }, 30000);
+}
+
+function parsePrayerTimeToDate(timeStr) {
+  const cleanTime = String(timeStr).split(' ')[0];
+  const [h, m] = cleanTime.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function updateNextPrayer(locationLabel) {
+  if (!currentPrayerTimes || !nextPrayerName || !nextPrayerTime) return;
+
+  const now = new Date();
+  const prayerList = [
+    { key: 'Fajr', label: 'Subuh' },
+    { key: 'Sunrise', label: 'Syuruk' },
+    { key: 'Dhuhr', label: 'Zohor' },
+    { key: 'Asr', label: 'Asar' },
+    { key: 'Maghrib', label: 'Maghrib' },
+    { key: 'Isha', label: 'Isyak' }
+  ];
+
+  let upcomingPrayer = null;
+  let upcomingDate = null;
+
+  for (let i = 0; i < prayerList.length; i++) {
+    const p = prayerList[i];
+    if (currentPrayerTimes[p.key]) {
+      const pDate = parsePrayerTimeToDate(currentPrayerTimes[p.key]);
+      if (pDate > now) {
+        upcomingPrayer = p;
+        upcomingDate = pDate;
+        break;
+      }
+    }
+  }
+
+  if (!upcomingPrayer) {
+    upcomingPrayer = prayerList[0];
+    upcomingDate = parsePrayerTimeToDate(currentPrayerTimes.Fajr);
+    upcomingDate.setDate(upcomingDate.getDate() + 1);
+  }
+
+  nextPrayerName.textContent = upcomingPrayer.label;
+  const cleanClockTime = (currentPrayerTimes[upcomingPrayer.key] || '--:--').split(' ')[0];
+  nextPrayerTime.textContent = cleanClockTime;
+
+  const diffMs = upcomingDate.getTime() - now.getTime();
+  const diffMinsTotal = Math.max(1, Math.floor(diffMs / 60000));
+  const diffHours = Math.floor(diffMinsTotal / 60);
+  const diffMins = diffMinsTotal % 60;
+
+  let countdownStr = '';
+  if (diffHours > 0) {
+    countdownStr = `${diffHours}j ${diffMins}m lagi (${locationLabel})`;
+  } else {
+    countdownStr = `${diffMins} min lagi (${locationLabel})`;
+  }
+
+  if (prayerCountdownDesc) prayerCountdownDesc.textContent = countdownStr;
+}
+
+/* ---------- HABUK EMAS ---------- */
+function initGoldenDust() {
+  if (!dustCanvas) return;
+  const ctx = dustCanvas.getContext('2d');
+  let particles = [];
+  let width = dustCanvas.width = window.innerWidth;
+  let height = dustCanvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    width = dustCanvas.width = window.innerWidth;
+    height = dustCanvas.height = window.innerHeight;
+  });
+
+  const particleCount = 45;
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2 + 0.8,
+      speedY: Math.random() * -0.4 - 0.15,
+      speedX: (Math.random() - 0.5) * 0.3,
+      opacity: Math.random() * 0.7 + 0.2,
+      pulse: Math.random() * 0.02
+    });
+  }
+
+  function renderDust() {
+    ctx.clearRect(0, 0, width, height);
+    const t = Date.now() * 0.002;
+    particles.forEach(p => {
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.opacity += Math.sin(t) * p.pulse;
+
+      if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
+      if (p.x < -10) p.x = width + 10;
+      if (p.x > width + 10) p.x = -10;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 215, 0, ${Math.max(0.1, Math.min(0.85, p.opacity))})`;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(255, 215, 0, 0.7)';
+      ctx.fill();
+    });
+    requestAnimationFrame(renderDust);
+  }
+  renderDust();
+}
+
+/* ---------- MOTIVASI ---------- */
+function initMotivationQuotes() {
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+  const quoteIndex = (dayOfMonth - 1) % DAILY_QUOTES.length;
+  if (dailyQuoteText) dailyQuoteText.textContent = `"${DAILY_QUOTES[quoteIndex]}"`;
+  if (quoteDayIndicator) quoteDayIndicator.textContent = `Hari ${dayOfMonth} • Motivasi Harian`;
+}
+
+/* ---------- TARIKH ---------- */
+function formatToDateTimeLocal(date) {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function toDateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function initCustomDatePicker() {
+  const now = new Date();
+  if (customEntryDate) {
+    customEntryDate.value = formatToDateTimeLocal(now);
+    customEntryDate.addEventListener('input', checkFutureDateStatus);
+  }
+  if (resetCurrentTimeBtn) {
+    resetCurrentTimeBtn.addEventListener('click', () => {
+      customEntryDate.value = formatToDateTimeLocal(new Date());
+      checkFutureDateStatus();
+      showToast('Tarikh ditetapkan ke waktu semasa.');
+    });
+  }
+  checkFutureDateStatus();
+}
+
+function checkFutureDateStatus() {
+  if (!customEntryDate || !customEntryDate.value) return;
+  const selectedDate = new Date(customEntryDate.value);
+  if (isNaN(selectedDate.getTime())) return;
+  const isFuture = selectedDate.getTime() > Date.now();
+
+  if (futureStatusBadge) {
+    futureStatusBadge.style.display = isFuture ? 'inline-flex' : 'none';
+  }
+
+  if (editorHeaderDate) {
+    const dateStr = selectedDate.toLocaleDateString('ms-MY', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    editorHeaderDate.textContent = isFuture ? `${dateStr} (Rancangan Hadapan)` : dateStr;
+  }
+}
+
+/* ---------- KALENDAR ---------- */
+function renderCalendar() {
+  if (!calendarDaysGrid) return;
+  calendarDaysGrid.innerHTML = '';
+
+  const year = calendarDateCursor.getFullYear();
+  const month = calendarDateCursor.getMonth();
+
+  const monthNames = [
+    'Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun',
+    'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'
+  ];
+  if (calendarMonthYear) calendarMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    const emptyCell = document.createElement('div');
+    emptyCell.className = 'cal-day empty';
+    calendarDaysGrid.appendChild(emptyCell);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day';
+    cell.textContent = day;
+
+    const cellDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+    if (isToday) cell.classList.add('today');
+
+    const entriesOnDate = journalEntries.filter(e => toDateKey(new Date(e.timestamp)) === cellDateStr);
+
+    if (entriesOnDate.length > 0) {
+      cell.classList.add('has-entry');
+      const hasFutureEntry = entriesOnDate.some(e => new Date(e.timestamp).getTime() > Date.now());
+      if (hasFutureEntry) cell.classList.add('is-future');
+    }
+
+    if (currentFilteredDate === cellDateStr) {
+      cell.classList.add('active-filter');
+    }
+
+    cell.addEventListener('click', () => {
+      if (currentFilteredDate === cellDateStr) {
+        currentFilteredDate = null;
+        if (resetCalFilterBtn) resetCalFilterBtn.style.display = 'none';
+      } else {
+        currentFilteredDate = cellDateStr;
+        if (resetCalFilterBtn) resetCalFilterBtn.style.display = 'inline-block';
+
+        // Tetapkan tarikh editor hanya jika bukan sedang menyunting catatan
+        if (!currentEditingEntryId) {
+          const now = new Date();
+          customEntryDate.value = `${cellDateStr}T${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          checkFutureDateStatus();
+        }
+        openArchiveDropside();
+      }
+      renderCalendar();
+      renderEntries(searchEntriesInput ? searchEntriesInput.value : '');
+    });
+
+    calendarDaysGrid.appendChild(cell);
+  }
+}
+
+if (prevMonthBtn) {
+  prevMonthBtn.addEventListener('click', () => {
+    calendarDateCursor.setMonth(calendarDateCursor.getMonth() - 1, 1);
+    renderCalendar();
+  });
+}
+
+if (nextMonthBtn) {
+  nextMonthBtn.addEventListener('click', () => {
+    calendarDateCursor.setMonth(calendarDateCursor.getMonth() + 1, 1);
+    renderCalendar();
+  });
+}
+
+if (resetCalFilterBtn) {
+  resetCalFilterBtn.addEventListener('click', () => {
+    currentFilteredDate = null;
+    resetCalFilterBtn.style.display = 'none';
+    renderCalendar();
+    renderEntries(searchEntriesInput ? searchEntriesInput.value : '');
+  });
+}
+
+/* ---------- KAMERA ASLI & PEMILIH GAMBAR ---------- */
+window.openSystemCameraDirectly = function () {
+  if (attachedPhotos.length >= 10) {
+    showToast('Maksimum 10 keping foto dicapai.');
+    return;
+  }
+  if (cameraSystemInput) {
+    cameraSystemInput.click();
+  }
+};
+
+function handlePhotoFilesList(files) {
+  if (!files || !files.length) return;
+  const remainingSlots = 10 - attachedPhotos.length;
+  if (remainingSlots <= 0) {
+    showToast('Maksimum 10 keping gambar sahaja dibenarkan!');
+    return;
+  }
+
+  const filesToProcess = files.slice(0, remainingSlots);
+  if (files.length > remainingSlots) {
+    showToast(`Hanya ${remainingSlots} foto dimasukkan (had 10).`);
+  }
+  let processedCount = 0;
+
+  filesToProcess.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      compressImage(event.target.result, 800, 0.85, (compressedBase64) => {
+        attachedPhotos.push(compressedBase64);
+        processedCount++;
+        if (processedCount === filesToProcess.length) {
+          currentPhotoCursorIndex = attachedPhotos.length - 1;
+          updatePhotoDropdownUI();
+          showToast(`${processedCount} foto berjaya dimasukkan!`);
+        }
+      });
+    };
+    reader.onerror = () => {
+      processedCount++;
+      if (processedCount === filesToProcess.length) updatePhotoDropdownUI();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function compressImage(base64Str, maxSide, quality, callback) {
+  const img = new Image();
+  img.onload = () => {
+    let width = img.width;
+    let height = img.height;
+    if (width > height) {
+      if (width > maxSide) {
+        height = Math.round((height * maxSide) / width);
+        width = maxSide;
+      }
+    } else {
+      if (height > maxSide) {
+        width = Math.round((width * maxSide) / height);
+        height = maxSide;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+    callback(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.onerror = () => callback(base64Str);
+  img.src = base64Str;
+}
+
+if (imageFileInput) {
+  imageFileInput.addEventListener('change', (e) => {
+    handlePhotoFilesList(Array.from(e.target.files));
+    imageFileInput.value = '';
+  });
+}
+
+if (cameraSystemInput) {
+  cameraSystemInput.addEventListener('change', (e) => {
+    handlePhotoFilesList(Array.from(e.target.files));
+    cameraSystemInput.value = '';
+  });
+}
+
+function updatePhotoDropdownUI() {
+  if (!photoCountLabel) return;
+  photoCountLabel.textContent = attachedPhotos.length;
+
+  if (attachedPhotos.length === 0) {
+    photoDropdownContainer.style.display = 'none';
+    activePhotoPreviewImg.removeAttribute('src');
+    return;
+  }
+
+  if (currentPhotoCursorIndex >= attachedPhotos.length) currentPhotoCursorIndex = attachedPhotos.length - 1;
+  if (currentPhotoCursorIndex < 0) currentPhotoCursorIndex = 0;
+
+  photoDropdownContainer.style.display = 'flex';
+  photoCursorDropdown.innerHTML = '';
+
+  attachedPhotos.forEach((_, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `Gambar ${idx + 1} daripada ${attachedPhotos.length}`;
+    if (idx === currentPhotoCursorIndex) opt.selected = true;
+    photoCursorDropdown.appendChild(opt);
+  });
+
+  activePhotoPreviewImg.src = attachedPhotos[currentPhotoCursorIndex];
+}
+
+if (photoCursorDropdown) {
+  photoCursorDropdown.addEventListener('change', (e) => {
+    currentPhotoCursorIndex = parseInt(e.target.value, 10);
+    updatePhotoDropdownUI();
+  });
+}
+
+if (prevPhotoBtn) {
+  prevPhotoBtn.addEventListener('click', () => {
+    if (attachedPhotos.length === 0) return;
+    currentPhotoCursorIndex = (currentPhotoCursorIndex - 1 + attachedPhotos.length) % attachedPhotos.length;
+    updatePhotoDropdownUI();
+  });
+}
+
+if (nextPhotoBtn) {
+  nextPhotoBtn.addEventListener('click', () => {
+    if (attachedPhotos.length === 0) return;
+    currentPhotoCursorIndex = (currentPhotoCursorIndex + 1) % attachedPhotos.length;
+    updatePhotoDropdownUI();
+  });
+}
+
+if (removePhotoBtn) {
+  removePhotoBtn.addEventListener('click', () => {
+    if (attachedPhotos.length === 0) return;
+    attachedPhotos.splice(currentPhotoCursorIndex, 1);
+    if (currentPhotoCursorIndex >= attachedPhotos.length) {
+      currentPhotoCursorIndex = Math.max(0, attachedPhotos.length - 1);
+    }
+    updatePhotoDropdownUI();
+    showToast('Foto dipadam daripada lampiran.');
+  });
+}
+
+/* ---------- KAMERA PERANTI 1:1 VIEWFINDER ---------- */
+if (openCameraModalBtn) {
+  openCameraModalBtn.addEventListener('click', async () => {
+    if (attachedPhotos.length >= 10) {
+      showToast('Maksimum 10 foto sudah dicapai!');
+      return;
+    }
+    cameraModal.classList.add('active');
+    await startCameraStream(currentFacingMode);
+  });
+}
+
+if (closeCameraModalBtn) {
+  closeCameraModalBtn.addEventListener('click', stopCameraStream);
+}
+
+async function startCameraStream(facing) {
+  try {
+    if (cameraMediaStream) {
+      cameraMediaStream.getTracks().forEach(track => track.stop());
+      cameraMediaStream = null;
+    }
+
+    if (cameraStatusSubtitle) cameraStatusSubtitle.textContent = 'Menyambung lensa kamera...';
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('MediaDevices tidak disokong.');
+    }
+
+    const constraintsList = [
+      { video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 640 } }, audio: false },
+      { video: { facingMode: facing }, audio: false },
+      { video: true, audio: false }
+    ];
+
+    let streamObtained = null;
+    let lastErr = null;
+    for (const c of constraintsList) {
+      try {
+        streamObtained = await navigator.mediaDevices.getUserMedia(c);
+        if (streamObtained) break;
+      } catch (e) {
+        lastErr = e;
+        if (e && e.name === 'NotAllowedError') break; // kebenaran ditolak, tak perlu cuba lagi
+      }
+    }
+
+    if (!streamObtained) throw (lastErr || new Error('Akses kamera disekat.'));
+
+    // Jika modal sudah ditutup semasa menunggu kebenaran, lepaskan kamera
+    if (!cameraModal.classList.contains('active')) {
+      streamObtained.getTracks().forEach(t => t.stop());
+      return;
+    }
+
+    cameraMediaStream = streamObtained;
+    cameraVideo.srcObject = cameraMediaStream;
+    cameraVideo.muted = true;
+    cameraVideo.setAttribute('playsinline', '');
+    cameraVideo.setAttribute('webkit-playsinline', '');
+
+    await cameraVideo.play();
+    if (cameraStatusSubtitle) cameraStatusSubtitle.textContent = facing === 'environment' ? 'Kamera Belakang Aktif' : 'Kamera Depan Aktif';
+  } catch (err) {
+    if (cameraStatusSubtitle) {
+      let reason = 'Lensa kamera tidak dapat dibuka.';
+      if (!window.isSecureContext) {
+        reason = 'Kamera memerlukan HTTPS (atau localhost). Fail yang dibuka terus (file://) tidak dibenarkan.';
+      } else if (err && err.name === 'NotAllowedError') {
+        reason = 'Kebenaran kamera ditolak. Benarkan kamera di tetapan pelayar/aplikasi.';
+      } else if (err && err.name === 'NotFoundError') {
+        reason = 'Tiada kamera dikesan pada peranti ini.';
+      } else if (err && err.name === 'NotReadableError') {
+        reason = 'Kamera sedang digunakan oleh aplikasi lain.';
+      }
+      cameraStatusSubtitle.innerHTML = escapeHtml(reason) + '<br><button type="button" onclick="triggerNativeCameraAndCloseModal()" style="margin-top:6px; background:var(--accent-color); color:#fff; border:none; padding:4px 10px; border-radius:6px; font-weight:700; cursor:pointer;">Guna Kamera Telefon (Ambil Foto)</button>';
+    }
+  }
+}
+
+window.triggerNativeCameraAndCloseModal = function () {
+  stopCameraStream();
+  openSystemCameraDirectly();
+};
+
+function stopCameraStream() {
+  if (cameraMediaStream) {
+    cameraMediaStream.getTracks().forEach(track => track.stop());
+    cameraMediaStream = null;
+  }
+  if (cameraVideo) cameraVideo.srcObject = null;
+  if (cameraModal) cameraModal.classList.remove('active');
+}
+
+if (flipCameraBtn) {
+  flipCameraBtn.addEventListener('click', async () => {
+    currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+    await startCameraStream(currentFacingMode);
+  });
+}
+
+if (takePhotoShutterBtn) {
+  takePhotoShutterBtn.addEventListener('click', () => {
+    if (!cameraVideo.srcObject) {
+      showToast('Kamera belum bersedia.');
+      return;
+    }
+
+    const vWidth = cameraVideo.videoWidth || 640;
+    const vHeight = cameraVideo.videoHeight || 480;
+
+    const squareSize = Math.min(vWidth, vHeight);
+    const startX = (vWidth - squareSize) / 2;
+    const startY = (vHeight - squareSize) / 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = squareSize;
+    canvas.height = squareSize;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(cameraVideo, startX, startY, squareSize, squareSize, 0, 0, squareSize, squareSize);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+
+    attachedPhotos.push(dataUrl);
+    currentPhotoCursorIndex = attachedPhotos.length - 1;
+    updatePhotoDropdownUI();
+    stopCameraStream();
+    showToast('Foto berjaya dirakam!');
+  });
+}
+
+/* ---------- RAKAMAN AUDIO MULTI-SLOT ---------- */
+function switchAudioSlot(slotIndex) {
+  currentAudioSlotIndex = slotIndex;
+  const tabBtns = document.querySelectorAll('.audio-tab-btn');
+  tabBtns.forEach((btn, idx) => {
+    btn.classList.toggle('active', idx === slotIndex);
+  });
+  updateAudioSlotUI();
+}
+
+function updateAudioSlotUI() {
+  for (let i = 0; i < 3; i++) {
+    const dot = document.getElementById(`audioDot${i}`);
+    if (dot) dot.classList.toggle('filled', attachedAudios[i] !== null);
+  }
+
+  const currentAudio = attachedAudios[currentAudioSlotIndex];
+  if (currentAudio) {
+    audioPlaybackElement.src = currentAudio;
+    audioPlaybackElement.style.display = 'block';
+    deleteAudioSlotBtn.style.display = 'inline-flex';
+  } else {
+    audioPlaybackElement.pause();
+    audioPlaybackElement.removeAttribute('src');
+    audioPlaybackElement.load();
+    audioPlaybackElement.style.display = 'none';
+    deleteAudioSlotBtn.style.display = 'none';
+  }
+}
+
+if (deleteAudioSlotBtn) {
+  deleteAudioSlotBtn.addEventListener('click', () => {
+    attachedAudios[currentAudioSlotIndex] = null;
+    updateAudioSlotUI();
+    showToast(`Audio Slot ${currentAudioSlotIndex + 1} dipadam.`);
+  });
+}
+
+/* getUserMedia dalam sesetengah WebView/APK tidak pernah selesai (tiada respons). Had masa menjamin UI sentiasa bertindak balas. */
+function getMicStreamWithTimeout(ms) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      const e = new Error('Tiada respons daripada mikrofon.');
+      e.name = 'TimeoutError';
+      reject(e);
+    }, ms);
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      if (settled) { stream.getTracks().forEach(t => t.stop()); return; }
+      settled = true;
+      clearTimeout(timer);
+      resolve(stream);
+    }).catch(err => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
+}
+
+function getSupportedAudioMimeType() {
+  const candidates = [
+    'audio/mp4',
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/aac',
+    'audio/ogg'
+  ];
+  for (const t of candidates) {
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) {
+      return t;
+    }
+  }
+  return '';
+}
+
+if (toggleRecordBtn) {
+  toggleRecordBtn.addEventListener('click', async () => {
+    if (!isRecording) {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+          throw new Error('Pelayar ini tidak menyokong rakaman audio.');
+        }
+
+        toggleRecordBtn.disabled = true;
+        toggleRecordBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyambung mikrofon...';
+        audioStream = await getMicStreamWithTimeout(8000);
+        toggleRecordBtn.disabled = false;
+        const mimeType = getSupportedAudioMimeType();
+        const options = mimeType ? { mimeType } : {};
+        const targetSlot = currentAudioSlotIndex; // slot dikunci semasa mula rakam
+
+        try {
+          mediaRecorder = new MediaRecorder(audioStream, options);
+        } catch (e1) {
+          mediaRecorder = new MediaRecorder(audioStream); // format lalai pelayar
+        }
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data && e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: (mediaRecorder && mediaRecorder.mimeType) || mimeType || 'audio/webm' });
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            attachedAudios[targetSlot] = e.target.result;
+            updateAudioSlotUI();
+            showToast(`Audio Slot ${targetSlot + 1} berjaya disimpan!`);
+          };
+          reader.readAsDataURL(audioBlob);
+
+          if (audioStream) {
+            audioStream.getTracks().forEach(track => track.stop());
+            audioStream = null;
+          }
+        };
+
+        mediaRecorder.start(250);
+        isRecording = true;
+        const errBox = document.getElementById('audioErrorMsg');
+        if (errBox) errBox.style.display = 'none';
+        toggleRecordBtn.classList.add('recording');
+        toggleRecordBtn.innerHTML = '<i class="fa-solid fa-stop"></i> Berhenti Rakam';
+        recordingTimer.style.display = 'inline-block';
+        recordingSeconds = 0;
+        recordingTimer.innerHTML = '<i class="fa-solid fa-circle"></i> 00:00';
+        recordingInterval = setInterval(() => {
+          recordingSeconds++;
+          const mins = String(Math.floor(recordingSeconds / 60)).padStart(2, '0');
+          const secs = String(recordingSeconds % 60).padStart(2, '0');
+          recordingTimer.innerHTML = `<i class="fa-solid fa-circle"></i> ${mins}:${secs}`;
+        }, 1000);
+
+      } catch (err) {
+        toggleRecordBtn.disabled = false;
+        toggleRecordBtn.classList.remove('recording');
+        toggleRecordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Mula Rakam';
+        let reason = 'Rakaman gagal dimulakan.';
+        if (!window.isSecureContext) {
+          reason = 'Mikrofon perlukan HTTPS (atau localhost).';
+        } else if (err && err.name === 'NotAllowedError') {
+          reason = 'Mikrofon disekat. Benarkan mikrofon untuk laman ini di tetapan pelayar (ikon di sebelah alamat URL).';
+        } else if (err && err.name === 'NotFoundError') {
+          reason = 'Tiada mikrofon dikesan.';
+        } else if (err && err.name === 'TimeoutError') {
+          reason = 'Tiada respons: WebView aplikasi ini tidak meluluskan akses mikrofon. Buka laman di Chrome, atau pembina APK perlu mengaktifkan kebenaran mikrofon WebView.';
+        } else if (err && err.name === 'NotReadableError') {
+          reason = 'Mikrofon sedang digunakan aplikasi lain.';
+        } else if (err && err.message) {
+          reason = err.message;
+        }
+        showToast(reason);
+        const errBoxShow = document.getElementById('audioErrorMsg');
+        if (errBoxShow) {
+          errBoxShow.textContent = reason;
+          errBoxShow.style.display = 'block';
+        }
+        if (audioStream) {
+          audioStream.getTracks().forEach(t => t.stop());
+          audioStream = null;
+        }
+      }
+    } else {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      isRecording = false;
+      toggleRecordBtn.classList.remove('recording');
+      toggleRecordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Mula Rakam';
+      recordingTimer.style.display = 'none';
+      clearInterval(recordingInterval);
+    }
+  });
+}
+
+/* ---------- PENGURUSAN ENTRI JURNAL ---------- */
+function loadEntriesFromStorage() {
+  try {
+    const saved = localStorage.getItem('mydiary_entries');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      journalEntries = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch (e) {
+    journalEntries = [];
+  }
+  updateDashboardCounts();
+}
+
+function saveEntriesToStorage() {
+  let ok = true;
+  try {
+    localStorage.setItem('mydiary_entries', JSON.stringify(journalEntries));
+  } catch (e) {
+    ok = false;
+    showToast('Storan penuh! Kurangkan foto/audio supaya catatan dapat disimpan.');
+  }
+  updateDashboardCounts();
+  return ok;
+}
+
+function updateDashboardCounts() {
+  if (totalEntriesCount) totalEntriesCount.textContent = journalEntries.length;
+  if (headerArchiveCount) headerArchiveCount.textContent = journalEntries.length;
+  if (floatingCountBadge) floatingCountBadge.textContent = journalEntries.length;
+  if (archiveTotalBadge) archiveTotalBadge.textContent = journalEntries.length;
+
+  let photosTotal = 0;
+  let audioTotal = 0;
+  let futureTotal = 0;
+  const now = Date.now();
+
+  journalEntries.forEach(e => {
+    if (e.photos) photosTotal += e.photos.length;
+    if (e.audios) audioTotal += e.audios.filter(a => a !== null).length;
+    if (new Date(e.timestamp).getTime() > now) futureTotal++;
+  });
+
+  if (totalPhotosCount) totalPhotosCount.textContent = photosTotal;
+  if (totalAudioCount) totalAudioCount.textContent = audioTotal;
+  if (futureEntriesCount) futureEntriesCount.textContent = futureTotal;
+}
+
+function createEntryObject(existingId = null) {
+  const title = entryTitleInput.value.trim();
+  const content = entryContentInput.value.trim();
+  if (!title || !content) {
+    showToast('Sila isikan tajuk dan kandungan catatan!');
+    return null;
+  }
+
+  let timestamp;
+  if (customEntryDate && customEntryDate.value) {
+    const d = new Date(customEntryDate.value);
+    timestamp = isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+  } else {
+    timestamp = new Date().toISOString();
+  }
+
+  return {
+    id: existingId || ('entry_' + Date.now() + '_' + Math.floor(Math.random() * 1000)),
+    title: title,
+    mood: entryMoodSelect.value,
+    category: entryCategorySelect.value,
+    content: content,
+    photos: [...attachedPhotos],
+    audios: [...attachedAudios],
+    timestamp: timestamp
+  };
+}
+
+function stopRecordingIfActive() {
+  if (isRecording && mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  isRecording = false;
+  clearInterval(recordingInterval);
+  if (toggleRecordBtn) {
+    toggleRecordBtn.classList.remove('recording');
+    toggleRecordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Mula Rakam';
+  }
+  if (recordingTimer) recordingTimer.style.display = 'none';
+}
+
+function resetEditorForm() {
+  stopRecordingIfActive();
+  journalEntryForm.reset();
+  attachedPhotos = [];
+  currentPhotoCursorIndex = 0;
+  updatePhotoDropdownUI();
+
+  attachedAudios = [null, null, null];
+  switchAudioSlot(0);
+
+  customEntryDate.value = formatToDateTimeLocal(new Date());
+  checkFutureDateStatus();
+
+  currentEditingEntryId = null;
+  if (editingStatusBar) editingStatusBar.style.display = 'none';
+  if (editorPanelTitle) editorPanelTitle.innerHTML = '<i class="fa-solid fa-pen-nib"></i> Coretan &amp; Rancangan Baharu';
+  if (primarySubmitBtn) primarySubmitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Catatan';
+}
+
+if (cancelEditModeBtn) {
+  cancelEditModeBtn.addEventListener('click', () => {
+    resetEditorForm();
+    showToast('Suntingan dibatalkan.');
+  });
+}
+
+window.startEditEntryRecord = function (id) {
+  const entry = journalEntries.find(e => e.id === id);
+  if (!entry) return;
+
+  stopRecordingIfActive();
+  currentEditingEntryId = entry.id;
+
+  entryTitleInput.value = entry.title || '';
+  entryMoodSelect.value = entry.mood || '🌸 Tenang & Bahagia';
+  entryCategorySelect.value = entry.category || 'Catatan Harian';
+  entryContentInput.value = entry.content || '';
+
+  if (entry.timestamp) {
+    customEntryDate.value = formatToDateTimeLocal(new Date(entry.timestamp));
+    checkFutureDateStatus();
+  }
+
+  attachedPhotos = entry.photos ? [...entry.photos] : [];
+  currentPhotoCursorIndex = 0;
+  updatePhotoDropdownUI();
+
+  if (entry.audios && Array.isArray(entry.audios)) {
+    attachedAudios = [entry.audios[0] || null, entry.audios[1] || null, entry.audios[2] || null];
+  } else {
+    attachedAudios = [null, null, null];
+  }
+  switchAudioSlot(0);
+
+  if (editingStatusBar) editingStatusBar.style.display = 'flex';
+  if (editorPanelTitle) editorPanelTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Sunting Semula Catatan';
+  if (primarySubmitBtn) primarySubmitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Kemas Kini Catatan';
+
+  closeArchiveDropside();
+  if (editorPanelContainer) {
+    editorPanelContainer.scrollIntoView({ behavior: 'smooth' });
+  }
+  showToast('Catatan dimuatkan untuk disunting!');
+};
+
+if (journalEntryForm) {
+  journalEntryForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (currentEditingEntryId) {
+      const updatedEntry = createEntryObject(currentEditingEntryId);
+      if (!updatedEntry) return;
+
+      const index = journalEntries.findIndex(item => item.id === currentEditingEntryId);
+      if (index !== -1) {
+        journalEntries[index] = updatedEntry;
+        saveEntriesToStorage();
+        renderEntries();
+        renderCalendar();
+        resetEditorForm();
+        showToast('Catatan berjaya dikemas kini!');
+        openArchiveDropside();
+      }
+    } else {
+      const newEntry = createEntryObject();
+      if (!newEntry) return;
+
+      journalEntries.unshift(newEntry);
+      saveEntriesToStorage();
+      renderEntries();
+      renderCalendar();
+      resetEditorForm();
+
+      const isFuture = new Date(newEntry.timestamp).getTime() > Date.now();
+      showToast(isFuture ? 'Perancangan masa depan berjaya disimpan!' : 'Catatan berjaya disimpan ke arkib!');
+      openArchiveDropside();
+    }
+  });
+}
+
+/* ---------- GOOGLE CALENDAR ---------- */
+function buildGoogleCalendarLink(entry) {
+  const startDate = new Date(entry.timestamp);
+  const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+  const formatGCal = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+  const datesParam = `${formatGCal(startDate)}/${formatGCal(endDate)}`;
+  const titleText = `[MyDiary] ${entry.title}`;
+  const isFuture = startDate.getTime() > Date.now();
+  const detailsText = `Status: ${isFuture ? 'Perancangan Masa Depan' : 'Catatan Jurnal'}\nKategori: ${entry.category}\nSuasana: ${entry.mood}\n\nNota:\n${entry.content}`;
+
+  const baseUrl = "https://calendar.google.com/calendar/render";
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: titleText,
+    dates: datesParam,
+    details: detailsText
+  });
+
+  return `${baseUrl}?${params.toString()}`;
+}
+
+if (saveAndGoogleCalendarBtn) {
+  saveAndGoogleCalendarBtn.addEventListener('click', () => {
+    const entryToSave = createEntryObject(currentEditingEntryId);
+    if (!entryToSave) return;
+
+    if (currentEditingEntryId) {
+      const index = journalEntries.findIndex(item => item.id === currentEditingEntryId);
+      if (index !== -1) journalEntries[index] = entryToSave;
+      else journalEntries.unshift(entryToSave);
+    } else {
+      journalEntries.unshift(entryToSave);
+    }
+
+    saveEntriesToStorage();
+    renderEntries();
+    renderCalendar();
+
+    const gcalUrl = buildGoogleCalendarLink(entryToSave);
+    window.open(gcalUrl, '_blank');
+
+    resetEditorForm();
+    showToast('Disimpan & dialihkan ke Google Calendar!');
+    openArchiveDropside();
+  });
+}
+
+/* ---------- PAPARAN ARKIB ---------- */
+function renderEntries(searchTerm = '') {
+  if (!archiveEntriesContainer) return;
+  archiveEntriesContainer.innerHTML = '';
+
+  let list = [...journalEntries];
+
+  if (searchTerm.trim()) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(e =>
+      (e.title || '').toLowerCase().includes(q) ||
+      (e.content || '').toLowerCase().includes(q)
+    );
+  }
+
+  if (currentFilteredDate) {
+    list = list.filter(e => toDateKey(new Date(e.timestamp)) === currentFilteredDate);
+  }
+
+  // Susun mengikut tarikh catatan (terkini di atas)
+  list.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  if (list.length === 0) {
+    archiveEntriesContainer.innerHTML = '<div style="text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.85rem;"><i class="fa-regular fa-folder-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>Tiada catatan ditemui.</div>';
+    return;
+  }
+
+  list.forEach(entry => {
+    const card = document.createElement('article');
+    card.className = 'entry-card';
+
+    const dateObj = new Date(entry.timestamp);
+    const isFuture = dateObj.getTime() > Date.now();
+    const dateStr = dateObj.toLocaleDateString('ms-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+    const timeStr = dateObj.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+
+    let photoThumbnailsHtml = '';
+    if (entry.photos && entry.photos.length > 0) {
+      const imgsHtml = entry.photos.map((p, i) =>
+        `<img class="entry-thumb" data-photo-index="${i}" src="${p}" alt="Foto" style="width: 48px; height: 48px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">`
+      ).join('');
+      photoThumbnailsHtml = `<div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.35rem;">${imgsHtml}</div>`;
+    }
+
+    let audioPlayHtml = '';
+    if (entry.audios && entry.audios.some(a => a !== null)) {
+      const audios = entry.audios
+        .filter(a => a !== null)
+        .map(a => `<audio controls src="${a}" style="width: 100%; height: 28px; margin-top: 0.25rem;"></audio>`)
+        .join('');
+      audioPlayHtml = `<div style="margin-top: 0.35rem;">${audios}</div>`;
+    }
+
+    const futureBadge = isFuture
+      ? '<span class="filter-badge" style="background:#3b82f6; color:#fff; font-size:0.65rem;"><i class="fa-solid fa-rocket"></i> Masa Depan</span>'
+      : '';
+
+    card.innerHTML = `
+      <div class="entry-card-header">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+            <h4 class="entry-title">${escapeHtml(entry.title)}</h4>
+            ${futureBadge}
+          </div>
+          <div class="entry-meta-info">
+            <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+            <span><i class="fa-regular fa-clock"></i> ${timeStr}</span>
+          </div>
+        </div>
+        <span style="font-size: 0.85rem;">${escapeHtml(entry.mood)}</span>
+      </div>
+
+      <p class="entry-body">${escapeHtml(entry.content)}</p>
+
+      ${photoThumbnailsHtml}
+      ${audioPlayHtml}
+
+      <div class="entry-footer">
+        <span class="filter-badge" style="background: var(--accent-soft); color: var(--accent-color);">#${escapeHtml(entry.category)}</span>
+        <div style="display: flex; gap: 0.35rem;">
+          <button type="button" class="action-btn-sm edit" data-action="edit" title="Sunting Semula Catatan Ini">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button type="button" class="action-btn-sm" data-action="gcal" title="Buka di Google Calendar">
+            <i class="fa-brands fa-google" style="color: #4285f4;"></i>
+          </button>
+          <button type="button" class="action-btn-sm delete" data-action="delete" title="Padam Catatan">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Pasang pendengar acara (lebih selamat daripada onclick sebaris)
+    card.querySelectorAll('.entry-thumb').forEach(img => {
+      img.addEventListener('click', () => zoomImage(img.src));
+    });
+    card.querySelector('[data-action="edit"]').addEventListener('click', () => startEditEntryRecord(entry.id));
+    card.querySelector('[data-action="gcal"]').addEventListener('click', () => exportEntryToGCal(entry.id));
+    card.querySelector('[data-action="delete"]').addEventListener('click', () => deleteEntryRecord(entry.id));
+
+    archiveEntriesContainer.appendChild(card);
+  });
+}
+
+window.deleteEntryRecord = function (id) {
+  if (!confirm('Padam catatan ini secara kekal?')) return;
+  journalEntries = journalEntries.filter(e => e.id !== id);
+  if (currentEditingEntryId === id) resetEditorForm();
+  saveEntriesToStorage();
+  renderEntries(searchEntriesInput ? searchEntriesInput.value : '');
+  renderCalendar();
+  showToast('Catatan dipadam daripada arkib.');
+};
+
+window.exportEntryToGCal = function (id) {
+  const entry = journalEntries.find(e => e.id === id);
+  if (!entry) return;
+  window.open(buildGoogleCalendarLink(entry), '_blank');
+};
+
+function openArchiveDropside() {
+  archiveDropside.classList.add('open');
+  archiveBackdrop.classList.add('open');
+  renderEntries(searchEntriesInput ? searchEntriesInput.value : '');
+}
+
+function closeArchiveDropside() {
+  archiveDropside.classList.remove('open');
+  archiveBackdrop.classList.remove('open');
+}
+
+function setupEventListeners() {
+  if (headerArchiveBtn) headerArchiveBtn.addEventListener('click', openArchiveDropside);
+  if (floatingArchiveBtn) floatingArchiveBtn.addEventListener('click', openArchiveDropside);
+  if (closeArchiveBtn) closeArchiveBtn.addEventListener('click', closeArchiveDropside);
+  if (archiveBackdrop) archiveBackdrop.addEventListener('click', closeArchiveDropside);
+
+  const joyMascot = document.getElementById('joyMascot');
+  const happyEmojis = ['😄', '🥳', '✨', '💃', '🌟', '🥰', '🎈', '🤩'];
+  if (joyMascot) {
+    joyMascot.addEventListener('click', () => {
+      const rand = happyEmojis[Math.floor(Math.random() * happyEmojis.length)];
+      joyMascot.textContent = rand;
+      showToast('Keep smiling & stay happy! ' + rand);
+    });
+  }
+
+  if (searchEntriesInput) {
+    searchEntriesInput.addEventListener('input', (e) => {
+      renderEntries(e.target.value);
+    });
+  }
+
+  if (themeBtnToggle) {
+    themeBtnToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      themeDropdownMenu.classList.toggle('active');
+    });
+  }
+  document.addEventListener('click', (e) => {
+    if (themeDropdownMenu && !themeBtnToggle.contains(e.target) && !themeDropdownMenu.contains(e.target)) {
+      themeDropdownMenu.classList.remove('active');
+    }
+  });
+
+  if (openDonateModalBtn) {
+    openDonateModalBtn.addEventListener('click', () => donateModal.classList.add('active'));
+  }
+  if (closeDonateModalBtn) {
+    closeDonateModalBtn.addEventListener('click', () => donateModal.classList.remove('active'));
+  }
+  if (donateModal) {
+    donateModal.addEventListener('click', (e) => {
+      if (e.target === donateModal) donateModal.classList.remove('active');
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeArchiveDropside();
+      if (cameraModal) stopCameraStream();
+      if (donateModal) donateModal.classList.remove('active');
+      const zoom = document.getElementById('imageZoomModal');
+      if (zoom) zoom.classList.remove('active');
+    }
+  });
+}
+
+/* ---------- NAVIGASI BELAKANG (butang Back / gesture swipe) ----------
+   Back/swipe tidak akan keluar aplikasi: ia menutup lapisan terbuka
+   (zum foto, kamera, derma, arkib, menu tema), atau kembali ke menu utama. */
+function closeTopLayer() {
+  const zoom = document.getElementById('imageZoomModal');
+  if (zoom && zoom.classList.contains('active')) { zoom.classList.remove('active'); return true; }
+  if (cameraModal && cameraModal.classList.contains('active')) { stopCameraStream(); return true; }
+  if (donateModal && donateModal.classList.contains('active')) { donateModal.classList.remove('active'); return true; }
+  if (archiveDropside && archiveDropside.classList.contains('open')) { closeArchiveDropside(); return true; }
+  if (themeDropdownMenu && themeDropdownMenu.classList.contains('active')) { themeDropdownMenu.classList.remove('active'); return true; }
+  return false;
+}
+
+function goHomeMenu() {
+  if (currentFilteredDate) {
+    currentFilteredDate = null;
+    if (resetCalFilterBtn) resetCalFilterBtn.style.display = 'none';
+    renderCalendar();
+    renderEntries(searchEntriesInput ? searchEntriesInput.value : '');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pushGuardState() {
+  try { history.pushState({ page: 'guard' }, '', location.href); } catch (e) {}
+}
+
+function initBackNavigation() {
+  try {
+    history.replaceState({ page: 'home' }, '', location.href);
+  } catch (e) { return; }
+  pushGuardState();
+
+  window.addEventListener('popstate', () => {
+    if (!closeTopLayer()) goHomeMenu();
+    pushGuardState(); // kekal dalam aplikasi
+  });
+
+  // Pelayar sesetengahnya mengabaikan entri sejarah tanpa interaksi pengguna,
+  // jadi pastikan pengawal wujud selepas sentuhan pertama.
+  const ensureGuard = () => {
+    try {
+      if (!history.state || history.state.page !== 'guard') pushGuardState();
+    } catch (e) {}
+  };
+  document.addEventListener('pointerdown', ensureGuard, { passive: true });
+}
+
+window.zoomImage = function (src) {
+  const modal = document.getElementById('imageZoomModal');
+  const img = document.getElementById('zoomedImageTag');
+  if (modal && img && src) {
+    img.src = src;
+    modal.classList.add('active');
+  }
+};
+
+let toastTimer = null;
+function showToast(message) {
+  if (!toastNotification || !toastMessageText) return;
+  toastMessageText.textContent = message;
+  toastNotification.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastNotification.classList.remove('show');
+  }, 3200);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+</script>
+</body>
+</html>
